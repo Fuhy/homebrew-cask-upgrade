@@ -17,7 +17,7 @@ In most cases, the folder name will indicate its current version. But sometimes 
 
 ## Options
 
-The tool will provide the following options:
+The tool provides the following options:
 
 + `-s` `-skip`
 
@@ -35,4 +35,11 @@ The tool will provide the following options:
 + `-n`
 
   By default, all status of the casks will be shown. The `-n` option suppresses these behavior by only showing the outdated ones.
+
+  ​
+
+
+## Sample
+
+![UI](http://ox1e3odx6.bkt.clouddn.com/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-23%20%E4%B8%8B%E5%8D%887.18.58.png)
 

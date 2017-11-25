@@ -1,49 +1,70 @@
 truncateCask () {
-	for i in "$@" ; do
+	BREW_DIR=/usr/local/Homebrew/Library/Taps/caskroom/homebrew-cask/Casks
+	CASK_DIR=/usr/local/Caskroom/
+
+	for cask in "$@" ; do
 		currentCask=""
 		latestCask=""
 		# Show the latest version and the installed one.
-		echo  "$i \c" 
-		for i in $(brew cask info $i | sed '2d' | sed -n '1,2p'); do
-			if [[ $i == [0-9]*[0-9] ]] || [[ $i == latest ]] ; then
-				latestCask=$i
-				echo  "$i \c"
-			fi
+		echo  "$cask \c" 
 
-			if [[ $i == /* ]]; then
-				for terms in $(echo $i | sed 's/\// /g'); do
-					if [[ $terms == [0-9]* ]] || [[ $terms == latest ]] ; then
-						currentCask=$terms
-						echo  " $terms\c"
-					fi
-				done
-			fi
-		done
 
-		if [[ $currentCask == "$latestCask" ]]; then
-			echo " [OK]"
-		elif [[ $currentCask == latest ]] || [[ $latestCask == latest ]]; then
-			echo " [UNKNOWN]"
+		if grep 'auto_updates true' -q $BREW_DIR/$cask.rb; then
+			is_auto_updates=true
 		else
-			echo " [OUTDATED]"
+			is_auto_updates=false
+		fi
+
+
+		currentCask=$(ls $CASK_DIR/$cask) 
+		latestCask=$( grep '  version' $BREW_DIR/$cask.rb | awk '{print $2}' | sed "s/\'//g" | sed "s/^\://" )
+
+		echo "$currentCask \c"
+		echo "$latestCask \c"
+
+		if [[ $is_auto_updates == true ]]; then
+			echo "Y \c"
+		else
+			echo "N \c"
+		fi
+
+		if [[ $currentCask == latest ]] || [[ $latestCask == latest ]]; then
+			echo " [UNKNOWN]\c"
+		elif [[ $currentCask == "$latestCask" ]]; then
+			echo " [OK]\c"
+		else
+			echo " [OUTDATED]\c"
+		fi
+
+
+		if [[ $is_auto_updates == true ]]; then
+			echo " [PASS]"
+		else
+			printf "\n"
 		fi
 	done
 }
+
 
 printCask () {
 	# Print all the apps
 	if [[ $1 == 0 ]]; then
 		awk 'BEGIN {
-			printf "\033[;;1m%-24s %-24s %-24s %-24s\033[0m\n"  ,"Cask Name","Current Version","Latest Version","Status"
-			printf "%-24s %-24s %-24s %-24s\n"  ,"------------","------------------","-----------------","-----------" 
+			printf "\033[;;1m%-24s %-24s %-24s %-10s %-24s\033[0m\n"  ,"Name","Current Version","Latest Version","A/U","Status"
+			printf "%-24s %-24s %-24s %-10s %-24s\n"  ,"------------","-----------------","-------------------","---","------" 
 		}
 		{
-			if($4=="[OK]") 
-				{printf "%-24s %-24s %-24s \033[32m%-24s\033[0m\n"  ,$1,$3,$2,$4}
-			else if($4=="[UNKNOWN]") 
-				{printf "\033[33m%-24s\033[0m \033[33m%-24s\033[0m \033[33m%-24s\033[0m \033[33m%-24s\033[0m\n" ,$1,$3,$2,$4 }
+			if($4=="N"){$4=" "} else{$4=" Y"}
+
+			if($5=="[OK]") 
+				{printf "\033[32m%-24s\033[0m %-24s %-24s %-10s \033[32m%-24s\033[0m\n"  ,$1,$2,$3,$4,$5}
+			else if($5=="[UNKNOWN]") 
+				{printf "\033[33m%-24s\033[0m \033[33m%-24s\033[0m \033[33m%-24s\033[0m \033[33m%-10s\033[0m \033[33m%-24s\033[0m\n" ,$1,$2,$3,$4,$5}
 			else
-				{printf "\033[31m%-24s %-24s %-24s %-24s\033[0m\n" ,$1,$3,$2,$4 }
+				{
+					if($6=="[PASS]"){printf "\033[31m%-24s\033[0m %-24s %-24s \033[31m%-10s %-24s\033[0m\n" ,$1,$2,$3,$4,$5}
+					else {printf "\033[31m%-24s %-24s %-24s %-10s %-24s\033[0m\n" ,$1,$2,$3,$4,$5}
+				}
 		}' ~/Library/Caches/brewcaskUpgrade/temp
 	fi
 		
@@ -56,16 +77,16 @@ printCask () {
 		awk '
 		{
 			if($4=="[OUTDATED]")
-				{printf "\033[31m%-24s %-24s %-24s %-24s\033[0m\n" ,$1,$3,$2,$4 ; count = count+1}
+				{printf "\033[31m%-24s %-24s %-24s %-24s\033[0m\n" ,$1,$2,$3,$4 ; count = count+1}
 		}
 		' ~/Library/Caches/brewcaskUpgrade/temp
 	else
 		awk '
 		{
 			if($4=="[OUTDATED]")
-				{printf "\033[31m%-24s\033[0m %-24s \033[31m%-24s %-24s\033[0m\n" ,$1,$3,$2,$4 ; count = count+1}
+				{printf "\033[31m%-24s\033[0m %-24s \033[31m%-24s %-24s\033[0m\n" ,$1,$2,$3,$4 ; count = count+1}
 			else if($4=="[UNKNOWN]")
-				{printf "\033[33m%-24s\033[0m %-24s \033[33m%-24s %-24s\033[0m\n" ,$1,$3,$2,$4 ; count = count+1}
+				{printf "\033[33m%-24s\033[0m %-24s \033[33m%-24s %-24s\033[0m\n" ,$1,$2,$3,$4 ; count = count+1}
 		}
 		' ~/Library/Caches/brewcaskUpgrade/temp
 	fi
@@ -183,7 +204,7 @@ parseArguments () {
 		if [[ $forceStatus == 1 ]]; then
 			updateCask $(gawk '{ if($4=="[OUTDATED]"||$4=="[UNKNOWN]") {printf "%s ",$1} }' ~/Library/Caches/brewcaskUpgrade/temp)
 		else
-			updateCask $(gawk '{ if($4=="[OUTDATED]") {printf "%s ",$1} }' ~/Library/Caches/brewcaskUpgrade/temp)
+			updateCask $(gawk '{ if($4=="[OUTDATED]"&&$6!="[PASS]") {printf "%s ",$1} }' ~/Library/Caches/brewcaskUpgrade/temp)
 		fi
 	fi
 }
@@ -206,3 +227,6 @@ if [[ $? != 0 ]]; then
 fi
 
 parseArguments $*
+
+
+

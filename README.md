@@ -1,7 +1,9 @@
 # homebrew-cask-upgrade
 Upgrade the outdated apps installed by [Homebrew cask](https://caskroom.github.io).
 
-Actually there is a tool already supported the same function upgrading the outdated cask (And it is even better than this one🙃). To get more information, see the page: [buo / homebrew-cask-upgrade](https://github.com/buo/homebrew-cask-upgrade).
+**Update：**
+
+[Homebrew cask](https://caskroom.github.io) now has supported `brew cask update` command. This script has no use now😁
 
 
 
@@ -36,10 +38,12 @@ The tool provides the following options:
 
   By default, all status of the casks will be shown. The `-n` option suppresses these behavior by only showing the outdated ones.
 
-  ​
+  
 
 
 ## Sample
 
-![UI](http://ox1e3odx6.bkt.clouddn.com/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-23%20%E4%B8%8B%E5%8D%887.18.58.png)
+
+![demoBrew.png](https://i.loli.net/2019/03/11/5c8627a516f93.png)
+
 

@@ -3,7 +3,7 @@ Upgrade the outdated apps installed by [Homebrew cask](https://caskroom.github.i
 
 **Update：**
 
-[Homebrew cask](https://caskroom.github.io) now has supported `brew cask update` command. This script has no use now😁
+[Homebrew cask](https://caskroom.github.io) now has supported `brew cask upgrade` command. This script has no use now😁
 
 
 

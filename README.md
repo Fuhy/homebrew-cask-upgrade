@@ -11,7 +11,7 @@ Upgrade the outdated apps installed by [Homebrew cask](https://caskroom.github.i
 
 We can easily figure out whether an application is outdated by comparing its version with the latest one.
 
-The `$CASKNAME.rb` in  `/usr/local/Homebrew/Library/Taps/caskroom/homebrew-cask/Casks` includes the information of its latest version. Also, it includes the "`auto_updates`" variable to tell if this cask will check the available latest version itself when processing.
+The `$CASKNAME.rb` in  `/usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask/Casks` includes the information of its latest version. Also, it includes the "`auto_updates`" variable to tell if this cask will check the available latest version itself when processing.
 
 In most cases, the folder where the cask is installed will indicate its current version by its name. But sometimes it just named **"latest''**. In this case, the status of the cask will be marked as <u>***UNKNOWN***</u>. Otherwise, it will be <u>***OK***</u> or <u>***OUTDATED***</u>. 
 

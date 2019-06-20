@@ -1,5 +1,5 @@
 truncateCask () {
-	BREW_DIR=/usr/local/Homebrew/Library/Taps/caskroom/homebrew-cask/Casks
+	BREW_DIR=/usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask/Casks
 	CASK_DIR=/usr/local/Caskroom/
 
 	for cask in "$@" ; do

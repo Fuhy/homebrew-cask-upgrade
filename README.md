@@ -44,6 +44,6 @@ The tool provides the following options:
 ## Sample
 
 
-![demoBrew.png](https://i.loli.net/2019/03/11/5c8627a516f93.png)
+![demoBrew.png](https://alfreadsgraphbed.s3-ap-northeast-1.amazonaws.com/demoForBrewCaskUpdate.png)
 
 
